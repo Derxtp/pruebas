@@ -1,11 +1,6 @@
-/**
+// OBTENEMOS LOS DATOS DE CONVERSOR.JS AUTOMÁTICAMENTE
+const DB = window.FACTORES_CONVERSION;
 
- * @param {string} label
- * @param {string} unitId 
- * @param {string} converterType 
- * @param {string} themeColor 
- * @returns {string} 
- */
 function createResultCard(label, unitId, converterType, themeColor) {
     return `
         <div id="card-${converterType}-${unitId}" class="result-card bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 transition-all duration-200">
@@ -19,13 +14,13 @@ function initializeLengthConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-longitud');
     const resultsGrid = document.getElementById('resultsGrid-longitud');
     const precisionSelect = document.getElementById('precision-longitud');
-    for (const unit in lengthData.factors) {
+    
+    for (const unit in DB.longitud.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = lengthData.labels[unit];
+        option.textContent = DB.longitud.labels[unit];
         sourceUnitSelect.appendChild(option);
-        
-        resultsGrid.innerHTML += createResultCard(lengthData.labels[unit], unit, 'longitud', 'indigo');
+        resultsGrid.innerHTML += createResultCard(DB.longitud.labels[unit], unit, 'longitud', 'indigo');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -42,14 +37,13 @@ function convertLength() {
     const value = parseFloat(document.getElementById('inputValue-longitud').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-longitud').value;
     const precision = parseInt(document.getElementById('precision-longitud').value, 10);
-    const valueInMeters = value * lengthData.factors[sourceUnit];
+    const valueInMeters = value * DB.longitud.factors[sourceUnit];
 
-    for (const targetUnit in lengthData.factors) {
-        const result = valueInMeters / lengthData.factors[targetUnit];
+    for (const targetUnit in DB.longitud.factors) {
+        const result = valueInMeters / DB.longitud.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-longitud-${targetUnit}`).textContent = formattedResult;
 
-        // Actualizar estilo de la tarjeta de origen
         const card = document.getElementById(`card-longitud-${targetUnit}`);
         const isSource = targetUnit === sourceUnit;
         card.classList.toggle('bg-indigo-50', isSource);
@@ -63,13 +57,12 @@ function initializePressureConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-presion');
     const resultsGrid = document.getElementById('resultsGrid-presion');
     const precisionSelect = document.getElementById('precision-presion');
-    for (const unit in pressureData.factors) {
+    for (const unit in DB.presion.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = pressureData.labels[unit];
+        option.textContent = DB.presion.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(pressureData.labels[unit], unit, 'presion', 'red');
+        resultsGrid.innerHTML += createResultCard(DB.presion.labels[unit], unit, 'presion', 'red');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -86,10 +79,10 @@ function convertPressure() {
     const value = parseFloat(document.getElementById('inputValue-presion').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-presion').value;
     const precision = parseInt(document.getElementById('precision-presion').value, 10);
-    const valueInPascals = value * pressureData.factors[sourceUnit];
+    const valueInPascals = value * DB.presion.factors[sourceUnit];
 
-    for (const targetUnit in pressureData.factors) {
-        const result = valueInPascals / pressureData.factors[targetUnit];
+    for (const targetUnit in DB.presion.factors) {
+        const result = valueInPascals / DB.presion.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-presion-${targetUnit}`).textContent = formattedResult;
 
@@ -106,13 +99,12 @@ function initializeTemperatureConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-temperatura');
     const resultsGrid = document.getElementById('resultsGrid-temperatura');
     const precisionSelect = document.getElementById('precision-temperatura');
-    temperatureData.units.forEach(unit => {
+    DB.temperatura.units.forEach(unit => {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = temperatureData.labels[unit];
+        option.textContent = DB.temperatura.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(temperatureData.labels[unit], unit, 'temperatura', 'amber');
+        resultsGrid.innerHTML += createResultCard(DB.temperatura.labels[unit], unit, 'temperatura', 'amber');
     });
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -129,9 +121,9 @@ function convertTemperature() {
     const value = parseFloat(document.getElementById('inputValue-temperatura').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-temperatura').value;
     const precision = parseInt(document.getElementById('precision-temperatura').value, 10);
-    const valueInKelvin = temperatureData.toKelvin[sourceUnit](value);
-    temperatureData.units.forEach(targetUnit => {
-        const result = temperatureData.fromKelvin[targetUnit](valueInKelvin);
+    const valueInKelvin = DB.temperatura.toKelvin[sourceUnit](value);
+    DB.temperatura.units.forEach(targetUnit => {
+        const result = DB.temperatura.fromKelvin[targetUnit](valueInKelvin);
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toFixed(precision);
         document.getElementById(`output-temperatura-${targetUnit}`).textContent = formattedResult;
 
@@ -148,13 +140,12 @@ function initializeTimeConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-tiempo');
     const resultsGrid = document.getElementById('resultsGrid-tiempo');
     const precisionSelect = document.getElementById('precision-tiempo');
-    for (const unit in timeData.factors) {
+    for (const unit in DB.tiempo.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = timeData.labels[unit];
+        option.textContent = DB.tiempo.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(timeData.labels[unit], unit, 'tiempo', 'orange');
+        resultsGrid.innerHTML += createResultCard(DB.tiempo.labels[unit], unit, 'tiempo', 'orange');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -171,10 +162,10 @@ function convertTime() {
     const value = parseFloat(document.getElementById('inputValue-tiempo').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-tiempo').value;
     const precision = parseInt(document.getElementById('precision-tiempo').value, 10);
-    const valueInSeconds = value * timeData.factors[sourceUnit];
+    const valueInSeconds = value * DB.tiempo.factors[sourceUnit];
 
-    for (const targetUnit in timeData.factors) {
-        const result = valueInSeconds / timeData.factors[targetUnit];
+    for (const targetUnit in DB.tiempo.factors) {
+        const result = valueInSeconds / DB.tiempo.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-tiempo-${targetUnit}`).textContent = formattedResult;
 
@@ -191,13 +182,12 @@ function initializeMassConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-masa');
     const resultsGrid = document.getElementById('resultsGrid-masa');
     const precisionSelect = document.getElementById('precision-masa');
-    for (const unit in massData.factors) {
+    for (const unit in DB.masa.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = massData.labels[unit];
+        option.textContent = DB.masa.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(massData.labels[unit], unit, 'masa', 'green');
+        resultsGrid.innerHTML += createResultCard(DB.masa.labels[unit], unit, 'masa', 'green');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -214,10 +204,10 @@ function convertMass() {
     const value = parseFloat(document.getElementById('inputValue-masa').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-masa').value;
     const precision = parseInt(document.getElementById('precision-masa').value, 10);
-    const valueInKilograms = value * massData.factors[sourceUnit];
+    const valueInKilograms = value * DB.masa.factors[sourceUnit];
 
-    for (const targetUnit in massData.factors) {
-        const result = valueInKilograms / massData.factors[targetUnit];
+    for (const targetUnit in DB.masa.factors) {
+        const result = valueInKilograms / DB.masa.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-masa-${targetUnit}`).textContent = formattedResult;
 
@@ -234,13 +224,12 @@ function initializeVolumeConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-volumen');
     const resultsGrid = document.getElementById('resultsGrid-volumen');
     const precisionSelect = document.getElementById('precision-volumen');
-    for (const unit in volumeData.factors) {
+    for (const unit in DB.volumen.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = volumeData.labels[unit];
+        option.textContent = DB.volumen.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(volumeData.labels[unit], unit, 'volumen', 'teal');
+        resultsGrid.innerHTML += createResultCard(DB.volumen.labels[unit], unit, 'volumen', 'teal');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -257,10 +246,10 @@ function convertVolume() {
     const value = parseFloat(document.getElementById('inputValue-volumen').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-volumen').value;
     const precision = parseInt(document.getElementById('precision-volumen').value, 10);
-    const valueInLiters = value * volumeData.factors[sourceUnit];
+    const valueInLiters = value * DB.volumen.factors[sourceUnit];
 
-    for (const targetUnit in volumeData.factors) {
-        const result = valueInLiters / volumeData.factors[targetUnit];
+    for (const targetUnit in DB.volumen.factors) {
+        const result = valueInLiters / DB.volumen.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-volumen-${targetUnit}`).textContent = formattedResult;
 
@@ -277,13 +266,12 @@ function initializeAngleConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-anguloplano');
     const resultsGrid = document.getElementById('resultsGrid-anguloplano');
     const precisionSelect = document.getElementById('precision-anguloplano');
-    for (const unit in angleData.factors) {
+    for (const unit in DB.angulo.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = angleData.labels[unit];
+        option.textContent = DB.angulo.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(angleData.labels[unit], unit, 'anguloplano', 'indigo');
+        resultsGrid.innerHTML += createResultCard(DB.angulo.labels[unit], unit, 'anguloplano', 'indigo');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -300,10 +288,10 @@ function convertAngle() {
     const value = parseFloat(document.getElementById('inputValue-anguloplano').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-anguloplano').value;
     const precision = parseInt(document.getElementById('precision-anguloplano').value, 10);
-    const valueInRadians = value * angleData.factors[sourceUnit];
+    const valueInRadians = value * DB.angulo.factors[sourceUnit];
 
-    for (const targetUnit in angleData.factors) {
-        const result = valueInRadians / angleData.factors[targetUnit];
+    for (const targetUnit in DB.angulo.factors) {
+        const result = valueInRadians / DB.angulo.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-anguloplano-${targetUnit}`).textContent = formattedResult;
 
@@ -320,13 +308,12 @@ function initializeAreaConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-area');
     const resultsGrid = document.getElementById('resultsGrid-area');
     const precisionSelect = document.getElementById('precision-area');
-    for (const unit in areaData.factors) {
+    for (const unit in DB.area.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = areaData.labels[unit];
+        option.textContent = DB.area.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(areaData.labels[unit], unit, 'area', 'cyan');
+        resultsGrid.innerHTML += createResultCard(DB.area.labels[unit], unit, 'area', 'cyan');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -343,10 +330,10 @@ function convertArea() {
     const value = parseFloat(document.getElementById('inputValue-area').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-area').value;
     const precision = parseInt(document.getElementById('precision-area').value, 10);
-    const valueInMeters2 = value * areaData.factors[sourceUnit];
+    const valueInMeters2 = value * DB.area.factors[sourceUnit];
 
-    for (const targetUnit in areaData.factors) {
-        const result = valueInMeters2 / areaData.factors[targetUnit];
+    for (const targetUnit in DB.area.factors) {
+        const result = valueInMeters2 / DB.area.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-area-${targetUnit}`).textContent = formattedResult;
 
@@ -363,13 +350,12 @@ function initializeEnergyConverter() {
     const sourceUnitSelect = document.getElementById('sourceUnit-energia');
     const resultsGrid = document.getElementById('resultsGrid-energia');
     const precisionSelect = document.getElementById('precision-energia');
-    for (const unit in energyData.factors) {
+    for (const unit in DB.energia.factors) {
         const option = document.createElement('option');
         option.value = unit;
-        option.textContent = energyData.labels[unit];
+        option.textContent = DB.energia.labels[unit];
         sourceUnitSelect.appendChild(option);
-
-        resultsGrid.innerHTML += createResultCard(energyData.labels[unit], unit, 'energia', 'yellow');
+        resultsGrid.innerHTML += createResultCard(DB.energia.labels[unit], unit, 'energia', 'yellow');
     }
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -386,10 +372,10 @@ function convertEnergy() {
     const value = parseFloat(document.getElementById('inputValue-energia').value) || 0;
     const sourceUnit = document.getElementById('sourceUnit-energia').value;
     const precision = parseInt(document.getElementById('precision-energia').value, 10);
-    const valueInJoules = value * energyData.factors[sourceUnit];
+    const valueInJoules = value * DB.energia.factors[sourceUnit];
 
-    for (const targetUnit in energyData.factors) {
-        const result = valueInJoules / energyData.factors[targetUnit];
+    for (const targetUnit in DB.energia.factors) {
+        const result = valueInJoules / DB.energia.factors[targetUnit];
         const formattedResult = (targetUnit === sourceUnit) ? value.toString() : result.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-energia-${targetUnit}`).textContent = formattedResult;
 
@@ -408,13 +394,13 @@ function initializeDataStorageConverter() {
     const precisionSelect = document.getElementById('precision-almacenamiento');
     
     let optionsHtml = '';
-    dataStorageData.UNITS.forEach(unit => {
+    DB.almacenamiento.UNITS.forEach(unit => {
         optionsHtml += `<option value="${unit.id}" ${unit.id === 'byte' ? 'selected' : ''}>${unit.label} (${unit.abbr})</option>`;
     });
     sourceUnitSelect.innerHTML = optionsHtml;
 
     let outputHtml = '';
-    dataStorageData.UNITS.forEach(unit => { // Usamos la función unificada
+    DB.almacenamiento.UNITS.forEach(unit => { 
         outputHtml += createResultCard(`${unit.label} (${unit.abbr})`, unit.id, 'almacenamiento', 'blue');
     });
 
@@ -438,7 +424,7 @@ function convertDataStorage() {
     const sourceValue = parseFloat(valueStr);
 
     if (isNaN(sourceValue) || sourceValue < 0) {
-        dataStorageData.UNITS.forEach(unit => {
+        DB.almacenamiento.UNITS.forEach(unit => {
             document.getElementById(`output-almacenamiento-${unit.id}`).textContent = '0';
             const cardElement = document.getElementById(`card-almacenamiento-${unit.id}`);
             cardElement.classList.remove('border-blue-700', 'bg-blue-50');
@@ -447,12 +433,12 @@ function convertDataStorage() {
         return;
     }
     
-    const sourceUnit = dataStorageData.UNITS.find(unit => unit.id === sourceId);
+    const sourceUnit = DB.almacenamiento.UNITS.find(unit => unit.id === sourceId);
     if (!sourceUnit) return;
 
     const bits = sourceValue * sourceUnit.factor;
 
-    dataStorageData.UNITS.forEach(targetUnit => {
+    DB.almacenamiento.UNITS.forEach(targetUnit => {
         const targetValue = bits / targetUnit.factor;
         let formattedValue = (targetUnit.id === sourceId) ? sourceValue.toString() : targetValue.toFixed(precision);
         if (precision > 0 && bits !== 0) {
@@ -463,7 +449,7 @@ function convertDataStorage() {
         const cardElement = document.getElementById(`card-almacenamiento-${targetUnit.id}`);
         const isSource = targetUnit.id === sourceId;
         cardElement.classList.toggle('border-blue-400', isSource);
-        cardElement.classList.toggle('bg-blue-50', targetUnit.id === sourceId);
+        cardElement.classList.toggle('bg-blue-50', isSource);
         cardElement.classList.toggle('border-gray-200', !isSource);
         cardElement.classList.toggle('bg-gray-50', !isSource);
     });
@@ -474,10 +460,10 @@ function convertSpeed() {
     const sourceUnitId = document.getElementById('sourceUnit-velocidad').value;
     const precision = parseInt(document.getElementById('precision-velocidad').value, 10);
 
-    const sourceUnit = speedData.UNITS.find(u => u.id === sourceUnitId);
+    const sourceUnit = DB.velocidad.UNITS.find(u => u.id === sourceUnitId);
     
     if (isNaN(inputValue) || inputValue < 0) {
-        speedData.UNITS.forEach(unit => {
+        DB.velocidad.UNITS.forEach(unit => {
             document.getElementById(`output-velocidad-${unit.id}`).textContent = 'Inválido';
         });
         return;
@@ -485,7 +471,7 @@ function convertSpeed() {
 
     const valueInMetersPerSecond = inputValue * sourceUnit.factor;
 
-    speedData.UNITS.forEach(targetUnit => {
+    DB.velocidad.UNITS.forEach(targetUnit => {
         const convertedValue = valueInMetersPerSecond / targetUnit.factor;
         const formattedResult = (targetUnit.id === sourceUnitId) ? inputValue.toString() : convertedValue.toLocaleString(undefined, { maximumFractionDigits: precision });
         document.getElementById(`output-velocidad-${targetUnit.id}`).textContent = formattedResult;
@@ -504,14 +490,14 @@ function initializeSpeedConverter() {
     const resultsGrid = document.getElementById('resultsGrid-velocidad');
     const precisionSelect = document.getElementById('precision-velocidad');
     
-    speedData.UNITS.forEach(unit => {
+    DB.velocidad.UNITS.forEach(unit => {
         const option = document.createElement('option');
         option.value = unit.id;
         option.textContent = `${unit.name} (${unit.symbol})`;
         sourceUnitSelect.appendChild(option);
     });
 
-    resultsGrid.innerHTML = speedData.UNITS.map(unit => createResultCard(`${unit.name} (${unit.symbol})`, unit.id, 'velocidad', 'indigo')).join('');
+    resultsGrid.innerHTML = DB.velocidad.UNITS.map(unit => createResultCard(`${unit.name} (${unit.symbol})`, unit.id, 'velocidad', 'indigo')).join('');
 
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -528,15 +514,14 @@ function initializeSpeedConverter() {
 function convertFuelEfficiency() {
     const inputEl = document.getElementById('inputValue-eficiencia');
     const selectEl = document.getElementById('selectUnit-eficiencia');
-    const resultsEl = document.getElementById('resultsGrid-eficiencia');
     const precision = parseInt(document.getElementById('precision-eficiencia').value, 10);
 
     const inputValue = parseFloat(inputEl.value);
     const sourceKey = selectEl.value;
-    const sourceUnit = fuelEfficiencyData.UNITS[sourceKey];
+    const sourceUnit = DB.eficiencia.UNITS[sourceKey];
 
     if (isNaN(inputValue) || inputValue <= 0) {
-        Object.keys(fuelEfficiencyData.UNITS).forEach(key => {
+        Object.keys(DB.eficiencia.UNITS).forEach(key => {
             const outputEl = document.getElementById(`output-eficiencia-${key}`);
             if (outputEl) outputEl.textContent = 'Inválido';
         });
@@ -545,8 +530,7 @@ function convertFuelEfficiency() {
 
     let baseKMPLValue = sourceUnit.isInverse ? sourceUnit.factorToKMPL / inputValue : inputValue * sourceUnit.factorToKMPL;
     
-    // Re-ejecutar la conversión para llenar los valores y aplicar estilos
-    Object.entries(fuelEfficiencyData.UNITS).forEach(([targetKey, targetUnit]) => {
+    Object.entries(DB.eficiencia.UNITS).forEach(([targetKey, targetUnit]) => {
         const result = targetUnit.isInverse ? targetUnit.factorToKMPL / baseKMPLValue : baseKMPLValue / targetUnit.factorToKMPL;
         const formattedResult = (targetKey === sourceKey) ? inputValue.toString() : result.toFixed(precision);
         document.getElementById(`output-eficiencia-${targetKey}`).textContent = formattedResult;
@@ -565,7 +549,7 @@ function initializeFuelEfficiencyConverter() {
     const precisionSelect = document.getElementById('precision-eficiencia');
 
     const fragment = document.createDocumentFragment();
-    Object.entries(fuelEfficiencyData.UNITS).forEach(([key, unit]) => {
+    Object.entries(DB.eficiencia.UNITS).forEach(([key, unit]) => {
         const option = document.createElement('option');
         option.value = key;
         option.textContent = unit.name + ` (${unit.symbol})`;
@@ -573,7 +557,7 @@ function initializeFuelEfficiencyConverter() {
     });
     selectEl.appendChild(fragment);
 
-    resultsGrid.innerHTML = Object.entries(fuelEfficiencyData.UNITS).map(([key, unit]) => createResultCard(`${unit.name} (${unit.symbol})`, key, 'eficiencia', 'teal')).join('');
+    resultsGrid.innerHTML = Object.entries(DB.eficiencia.UNITS).map(([key, unit]) => createResultCard(`${unit.name} (${unit.symbol})`, key, 'eficiencia', 'teal')).join('');
 
     for (let i = 0; i <= 8; i++) {
         const option = document.createElement('option');
@@ -588,9 +572,7 @@ function initializeFuelEfficiencyConverter() {
 }
 
 // --- INICIALIZACIÓN GENERAL ---
-
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Lógica del menú lateral (Sidebar) ---
     const sidebar = document.getElementById('sidebar');
     const toggleButton = document.getElementById('sidebar-toggle');
 
@@ -600,7 +582,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica para resaltar el enlace activo ---
     const currentPath = window.location.pathname.split("/").pop() || "index.html";
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -612,113 +593,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Inicialización del conversor adecuado ---
-    // Revisa si estamos en la página de longitud
     if (document.getElementById('resultsGrid-longitud')) {
         initializeLengthConverter();
-        // Asigna los eventos a los elementos del conversor de longitud
         document.getElementById('inputValue-longitud').addEventListener('input', convertLength);
         document.getElementById('precision-longitud').addEventListener('change', convertLength);
         document.getElementById('sourceUnit-longitud').addEventListener('change', convertLength);
     }
-
-    // Revisa si estamos en la página de presión
     if (document.getElementById('resultsGrid-presion')) {
         initializePressureConverter();
-        // Asigna los eventos a los elementos del conversor de presión
         document.getElementById('inputValue-presion').addEventListener('input', convertPressure);
         document.getElementById('precision-presion').addEventListener('change', convertPressure);
         document.getElementById('sourceUnit-presion').addEventListener('change', convertPressure);
     }
-
-    // Revisa si estamos en la página de temperatura
     if (document.getElementById('resultsGrid-temperatura')) {
         initializeTemperatureConverter();
-        // Asigna los eventos a los elementos del conversor de temperatura
         document.getElementById('inputValue-temperatura').addEventListener('input', convertTemperature);
         document.getElementById('precision-temperatura').addEventListener('change', convertTemperature);
         document.getElementById('sourceUnit-temperatura').addEventListener('change', convertTemperature);
     }
-
-    // Revisa si estamos en la página de tiempo
     if (document.getElementById('resultsGrid-tiempo')) {
         initializeTimeConverter();
-        // Asigna los eventos a los elementos del conversor de tiempo
         document.getElementById('inputValue-tiempo').addEventListener('input', convertTime);
         document.getElementById('precision-tiempo').addEventListener('change', convertTime);
         document.getElementById('sourceUnit-tiempo').addEventListener('change', convertTime);
     }
-
-    // Revisa si estamos en la página de masa
     if (document.getElementById('resultsGrid-masa')) {
         initializeMassConverter();
-        // Asigna los eventos a los elementos del conversor de masa
         document.getElementById('inputValue-masa').addEventListener('input', convertMass);
         document.getElementById('precision-masa').addEventListener('change', convertMass);
         document.getElementById('sourceUnit-masa').addEventListener('change', convertMass);
     }
-
-    // Revisa si estamos en la página de volumen
     if (document.getElementById('resultsGrid-volumen')) {
         initializeVolumeConverter();
-        // Asigna los eventos a los elementos del conversor de volumen
         document.getElementById('inputValue-volumen').addEventListener('input', convertVolume);
         document.getElementById('precision-volumen').addEventListener('change', convertVolume);
         document.getElementById('sourceUnit-volumen').addEventListener('change', convertVolume);
     }
-
-    // Revisa si estamos en la página de ángulo plano
     if (document.getElementById('resultsGrid-anguloplano')) {
         initializeAngleConverter();
-        // Asigna los eventos a los elementos del conversor de ángulo plano
         document.getElementById('inputValue-anguloplano').addEventListener('input', convertAngle);
         document.getElementById('precision-anguloplano').addEventListener('change', convertAngle);
         document.getElementById('sourceUnit-anguloplano').addEventListener('change', convertAngle);
     }
-
-    // Revisa si estamos en la página de área
     if (document.getElementById('resultsGrid-area')) {
         initializeAreaConverter();
-        // Asigna los eventos a los elementos del conversor de área
         document.getElementById('inputValue-area').addEventListener('input', convertArea);
         document.getElementById('precision-area').addEventListener('change', convertArea);
         document.getElementById('sourceUnit-area').addEventListener('change', convertArea);
     }
-
-    // Revisa si estamos en la página de energía
     if (document.getElementById('resultsGrid-energia')) {
         initializeEnergyConverter();
-        // Asigna los eventos a los elementos del conversor de energía
         document.getElementById('inputValue-energia').addEventListener('input', convertEnergy);
         document.getElementById('precision-energia').addEventListener('change', convertEnergy);
         document.getElementById('sourceUnit-energia').addEventListener('change', convertEnergy);
     }
-
-    // Revisa si estamos en la página de almacenamiento de datos
     if (document.getElementById('resultsGrid-almacenamiento')) {
         initializeDataStorageConverter();
-        // Asigna los eventos a los elementos del conversor de almacenamiento
         document.getElementById('inputValue-almacenamiento').addEventListener('input', convertDataStorage);
         document.getElementById('precision-almacenamiento').addEventListener('change', convertDataStorage);
         document.getElementById('sourceUnit-almacenamiento').addEventListener('change', convertDataStorage);
     }
-
-    // Revisa si estamos en la página de velocidad
     if (document.getElementById('resultsGrid-velocidad')) {
         initializeSpeedConverter();
-        // Asigna los eventos a los elementos del conversor de velocidad
         document.getElementById('inputValue-velocidad').addEventListener('input', convertSpeed);
         document.getElementById('precision-velocidad').addEventListener('change', convertSpeed);
         document.getElementById('sourceUnit-velocidad').addEventListener('change', convertSpeed);
     }
-    
-    // Revisa si estamos en la página de eficiencia de combustible
     if (document.getElementById('resultsGrid-eficiencia')) {
         initializeFuelEfficiencyConverter();
-        // Asigna los eventos a los elementos del conversor de eficiencia de combustible
         document.getElementById('inputValue-eficiencia').addEventListener('input', convertFuelEfficiency);
         document.getElementById('precision-eficiencia').addEventListener('change', convertFuelEfficiency);
         document.getElementById('selectUnit-eficiencia').addEventListener('change', convertFuelEfficiency);
     }
-
 });
